@@ -2499,7 +2499,7 @@ mdb_env_open2(MDB_env *env, unsigned int flags)
 		if (!mh)
 			return ErrCode();
 		env->me_map = MapViewOfFileEx(mh, FILE_MAP_READ, 0, 0, env->me_mapsize,
-			                      NULL);
+			meta.mm_address);
 		CloseHandle(mh);
 		if (!env->me_map)
 			return ErrCode();
@@ -3003,17 +3003,10 @@ fail:
 
 }
 
-#ifdef _WIN32
-/** The name of the lock file in the DB environment */
-#define LOCKNAME	"_lock.mdb"
-/** The name of the data file in the DB environment */
-#define DATANAME	"_data.mdb"
-#else
 	/** The name of the lock file in the DB environment */
 #define LOCKNAME	"/lock.mdb"
 	/** The name of the data file in the DB environment */
 #define DATANAME	"/data.mdb"
-#endif
 	/** The suffix of the lock file when no subdir is used */
 #define LOCKSUFF	"-lock"
 
