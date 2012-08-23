@@ -65,6 +65,12 @@
 
 #include <sys/types.h>
 
+#ifdef _WIN32
+#define mode_t int
+#define pid_t int
+#define ssize_t size_t
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

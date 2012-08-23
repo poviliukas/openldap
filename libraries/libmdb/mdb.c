@@ -34,12 +34,19 @@
  */
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/param.h>
 #ifdef _WIN32
+#define _LITTLE_ENDIAN
 #include <windows.h>
+#include <stdint.h>
+#pragma warning(disable : 4996)/* This function or variable may be unsafe. 
+Consider using fopen_s instead. To disable deprecation, 
+use _CRT_SECURE_NO_WARNINGS. See online help for details. */
 #else
 #include <sys/uio.h>
 #include <sys/mman.h>
+#include <sys/param.h>
+#include <inttypes.h>
+#include <unistd.h>
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
@@ -50,15 +57,15 @@
 #include <errno.h>
 #include <limits.h>
 #include <stddef.h>
-#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
+#ifndef _WIN32
 #if !(defined(BYTE_ORDER) || defined(__BYTE_ORDER))
 #include <resolv.h>	/* defines BYTE_ORDER on HPUX and Solaris */
+#endif
 #endif
 
 #if defined(__APPLE__) || defined (BSD)
@@ -3394,9 +3401,10 @@ mdb_cursor_pop(MDB_cursor *mc)
 		mc->mc_snum--;
 		if (mc->mc_snum)
 			mc->mc_top--;
-
+#if MDB_DEBUG
 		DPRINTF("popped page %zu off db %u cursor %p", top->mp_pgno,
 			mc->mc_dbi, (void *) mc);
+#endif
 	}
 }
 
